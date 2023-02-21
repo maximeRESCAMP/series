@@ -14,7 +14,7 @@
         <div>Premiere iteration</div>
     {% endif %}
     {#  index de l'élément #}
-    <div> inde de l'element courant {{ loop.index }} /{{ loop.length }}</div>
+    <div> index de l'element courant {{ loop.index }} /{{ loop.length }}</div>
     {% if loop.last %}
         <div>derniere iteration</div>
     {% endif %}
@@ -39,4 +39,5 @@
 <div>{{ colors | join("-") }}</div>
 <div>{{ "now" | date('Y-m-d') }}</div>
 {% endblock %}
+
 {%  block title %} {{ parent() }} | Test {%endblock %}

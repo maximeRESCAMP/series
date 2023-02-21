@@ -11,7 +11,13 @@ class MainController extends AbstractController
     #[Route('/home', name: 'main_home')]
     public function home(): Response
     {
-   return $this->render("main/home.html.twig");
+        $username = '<h1>Sylvain</h1>';
+        $serie = [ 'title' => 'Community', 'year '=>'Ouf', 'plateform'=>'NBC'];
+   return $this->render("main/home.html.twig",[
+       //la clé devien le nom de la variable cote twig
+       "name" => $username,
+       "serie"=> $serie
+       ]);
     }
 
     /**

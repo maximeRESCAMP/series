@@ -1,8 +1,18 @@
 {% extends'base.html.twig' %}
 {# parent permet de recuper ce qu'il ya dansl'element parent #}
-{%  block title %} {{ parent() }} | Home{% endblock %}
+{% block title %} {{ parent() }} | Home{% endblock %}
 {# si je redefinis le contenue j'ecrase le contenue de la base #}
 {% block body %}
-<h1> Welcome to series !</h1>
+    <h1> Welcome to series !{{ name }}</h1>
+    {# desactiver le protection XSS #}
+    <div>{{ name | raw }}</div>
+   {# suprime le complement de html #}
+    <div>{{ name |striptags }}</div>
+    <h2> Serie's detail</h2>
+    <ul>
+    {% for key, val in serie %}
+       <li> <div>{{  key }} : {{ val }}</div></li>
+    {% endfor %}
+    </ul>
 
 {% endblock %}
