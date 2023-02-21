@@ -1,0 +1,8 @@
+{% extends'base.html.twig' %}
+{# parent permet de recuper ce qu'il ya dansl'element parent #}
+{%  block title %} {{ parent() }} | Home{% endblock %}
+{# si je redefinis le contenue j'ecrase le contenue de la base #}
+{% block body %}
+<h1> Welcome to series !</h1>
+
+{% endblock %}

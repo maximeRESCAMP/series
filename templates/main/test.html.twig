@@ -1,0 +1,42 @@
+{%  extends 'base.html.twig' %}
+{% block body %}
+<h1>test</h1>
+{# Création de variable #}
+{% set name ="Sylvain" %}
+<h2>Hello {{ name~" "~ name }}</h2>
+{# creation d'un tableau #}
+{% set colors = ['red', 'purple', 'yellow','green'] %}
+{# boucler sur un tableau #}
+{% for col in colors %}
+    <div>{{ col }}</div>
+    {# usage de loop bariable cree par for #}
+    {% if loop.first %}
+        <div>Premiere iteration</div>
+    {% endif %}
+    {#  index de l'élément #}
+    <div> inde de l'element courant {{ loop.index }} /{{ loop.length }}</div>
+    {% if loop.last %}
+        <div>derniere iteration</div>
+    {% endif %}
+    {# si tableau vide ou ont passe pas de cles #}
+{% else %}
+    <div> pas d'element</div>
+{% endfor %}
+
+{#  manipulation d'object #}
+{% set serie = {
+    title : "LOTR",
+    year : 2022,
+    plateform : "Amazon"
+} %}
+<h2>Titre de la serie : {{ serie.title }}</h2>
+{#   boucler sur un object #}
+{% for key, val in serie %}
+    <div> {{ key}} : {{ val}} </div>
+{% endfor %}
+{# les filtres #}
+<div>{{ name | upper | lower | capitalize }} : {{  name | length }} lettres</div>
+<div>{{ colors | join("-") }}</div>
+<div>{{ "now" | date('Y-m-d') }}</div>
+{% endblock %}
+{%  block title %} {{ parent() }} | Test {%endblock %}
