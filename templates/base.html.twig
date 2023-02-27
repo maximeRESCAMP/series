@@ -12,22 +12,31 @@
 
 </head>
 <body>
-{% block styleCss %}{%endblock %}
+{% block styleCss %}{% endblock %}
 <div class="container">
-<header>
-    <h1>
-        <a href="{{ path('main_home') }}">
-            <img src="{{ asset('img/logo.svg') }}" alt="Series !  | Home">
-        </a>
-    </h1>
-    {% include 'menu/nav.html.twig' %}
-</header>
+    <header>
+        <h1>
+
+            <a href="{{ path('main_home') }}">
+                <img src="{{ asset('img/logo.svg') }}" alt="Series !  | Home">
+            </a>
+        </h1>
+        {% include 'menu/nav.html.twig' %}
+    </header>
     <main>
-{% block body %}{% endblock %}
+        {# lis les messages flash stockés #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash flash-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% block body %}{% endblock %}
     </main>
-<footer>
-    {% include 'menu/nav.html.twig' %}
-</footer>
+    <footer>
+        {% include 'menu/nav.html.twig' %}
+    </footer>
 </div>
 </body>
 </html>

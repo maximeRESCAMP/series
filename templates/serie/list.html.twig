@@ -1,15 +1,47 @@
 {% extends 'base.html.twig' %}
+
 {% block body %}
-    <h2>Series List !</h2>
-<section class="series-list">
-    {% for serie in series %}
-        <article><a href="{{ path('serie_show', {'id': serie.id}) }}">
-            <img src="{{ asset('img/posters/series/'~serie.poster) }}" alt="{{ serie.name }}"></a>
-            <p>{{ serie.name }}</p>
-        </article>
-    {% endfor %}
-</section>
-{%  endblock %}
-{%  block title %}
-    {{ parent() }} | List
+    <h2>Serie's details</h2>
+    <div class="serie-details">
+        {% for serie in series %}
+        <div class="serie-poster">
+            <img src="{{ asset('img/posters/series/' ~ serie.poster ) }}" alt="{{ serie.name }}">
+        </div>
+        <div class="serie-details-infos">
+            <h2>{{ serie.name }}</h2>
+            <div>User ratings : {{ serie.vote }}</div>
+            <div>Categorized in : {{ serie.genres }}</div>
+            <div>Serie status : {{ serie.status }}</div>
+            <div>Aired from {{ serie.firstAirDate | date('Y-m-d') }} to {{ serie.lastAirDate | date('Y-m-d') }}</div>
+            <div>{{ serie.overview | nl2br }}</div>
+            <section class="seasons">
+                <h3>Seasons !</h3>
+                {% for season in serie.seasons %}
+                    <article>
+                        <img src="{{ asset('img/posters/seasons/' ~ season.poster) }}"
+                             alt="{{ serie.name }} season {{ season.number }}">
+                        <div>
+                            <h4>Season #{{ season.number }}</h4>
+                            <div>{{ season.overview }}</div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </section>
+        </div>
+        {% endfor %}
+    </div>
 {% endblock %}
+
+{% block title %}
+    {{ parent() }} | Details
+{% endblock %}
+
+{#{% block styleCss %}#}
+{#    <style>#}
+{#        body{#}
+{#            background-image: linear-gradient(60deg, rgba(0,0,0, 0.8), rgba(0,0,0, 0.5)),#}
+{#            url("{{ asset('img/backdrops/' ~ serie.backdrop) }}");#}
+{#        }#}
+{#    </style>#}
+{#{% endblock %}#}
+
