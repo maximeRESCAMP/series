@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Season;
 use App\Entity\Serie;
+use App\Repository\SerieRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -27,7 +28,12 @@ class SeasonType extends AbstractType
             ->add('serie', EntityType::class,[
                 'class'=> Serie::class,
                 'choice_label'=>'name',
-                'label'=>'Associated serie'
+                'label'=>'Associated serie',
+                'query_builder'=> function(SerieRepository $serieRepository){
+                $qb =$serieRepository->createQueryBuilder('s');
+                $qb->addOrderBy('s.name');
+                return $qb;
+                }
             ])
         ;
     }

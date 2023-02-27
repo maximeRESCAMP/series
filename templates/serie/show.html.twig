@@ -3,6 +3,9 @@
 {% block body %}
     <h2>Serie's detail</h2>
     <div class="serie-details">
+        <div class="flex_div">
+        <a href="{{ path('serie_remove', {'id': serie.id}) }}" class="link_button" onclick="return confirm('Are you sure to delete this :{{ serie.name }}')">Delete</a>
+            </div>
         <div class="serie-poster">
             <img src="{{ asset('img/posters/series/')~ serie.poster }}" alt="{{ serie.name }}">
         </div>

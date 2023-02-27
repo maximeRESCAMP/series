@@ -43,6 +43,9 @@ img {
     max-width: 100%;
     min-width: 140px;
 }
+.flash-warning{
+    background-color: orange;
+}
 
 h1, h2, h3, h4 {
     margin-top: 0;

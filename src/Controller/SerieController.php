@@ -35,10 +35,10 @@ class SerieController extends AbstractController
         $nbSerieMax = $serieRepository->count([]);
         $maxPage = ceil($nbSerieMax / SerieRepository::SERIE_LIMIT);
 
-        if($page >= 1 && $page <= $maxPage){
+        if ($page >= 1 && $page <= $maxPage) {
             //utilisation d'une requête personnalisée
             $series = $serieRepository->findBestSeries($page);
-        }else{
+        } else {
             throw $this->createNotFoundException("Oops ! Page not found !");
         }
 
@@ -59,7 +59,7 @@ class SerieController extends AbstractController
         //récupération d'une série par son id
         $serie = $serieRepository->find($id);
 
-        if(!$serie){
+        if (!$serie) {
             //lance une erreur 404 si la série n'existe pas
             throw $this->createNotFoundException("Oops ! Serie not found !");
         }
@@ -72,7 +72,7 @@ class SerieController extends AbstractController
     #[Route('/add', name: 'add')]
     public function add(
         SerieRepository $serieRepository,
-        Request $request
+        Request         $request
     ): Response
     {
         $serie = new Serie();
@@ -85,8 +85,7 @@ class SerieController extends AbstractController
         $serieForm->handleRequest($request);
 
 
-
-        if($serieForm->isSubmitted() && $serieForm->isValid()){
+        if ($serieForm->isSubmitted() && $serieForm->isValid()) {
             //sauvegarde en BDD la nouvelle série
             $serieRepository->save($serie, true);
 
@@ -104,9 +103,21 @@ class SerieController extends AbstractController
         ]);
     }
 
+#[Route('/remove/{id}', name: 'remove')]
+public function remove(int $id, SerieRepository $serieRepository)
+{
+    $serie = $serieRepository->find($id);
+    if ($serie) {
+        //je la suprimer
+        $serieRepository->remove($serie, true);
+        $this->addFlash("warning", "serie deleted'");
 
+    } else {
+        throw $this->createNotFoundException("this serie can't be deleted");
+    }
 
-
+    return $this->redirectToRoute('serie_list');
+}
 
 
 }

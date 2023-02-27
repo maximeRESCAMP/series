@@ -12,12 +12,12 @@ class MainController extends AbstractController
     public function home(): Response
     {
         $username = '<h1>Sylvain</h1>';
-        $serie = [ 'title' => 'Community', 'year '=>'Ouf', 'plateform'=>'NBC'];
-   return $this->render("main/home.html.twig",[
-       //la clé devien le nom de la variable cote twig
-       "name" => $username,
-       "serie"=> $serie
-       ]);
+        $serie = ['title' => 'Community', 'year ' => 'Ouf', 'plateform' => 'NBC'];
+        return $this->render("main/home.html.twig", [
+            //la clé devien le nom de la variable cote twig
+            "name" => $username,
+            "serie" => $serie
+        ]);
     }
 
     /**
