@@ -4,13 +4,18 @@ namespace App\Form;
 
 use App\Entity\Serie;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SerieType extends AbstractType
 {
@@ -51,10 +56,20 @@ class SerieType extends AbstractType
             ->add('lastAirDate', DateType::class, [
                 'label' => 'Last air date : ',
                 'html5' => true,
-                'widget' => 'single_text'
+                'widget' => 'single_text',
             ])
             ->add('backdrop')
-            ->add('poster')
+            ->add('poster', FileType::class, [
+                'mapped' => false,
+                'constraints' => [
+                    new Image([
+                            "maxSize" => '5000k',
+                            "mimeTypesMessage" => "Image format not allowed !",
+
+                        ]
+                    )
+                ]
+            ])
             ->add('tmdbId')
 
         ;
@@ -64,7 +79,7 @@ class SerieType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Serie::class,
-            'required'=>false
+            'required' => false
         ]);
     }
 }

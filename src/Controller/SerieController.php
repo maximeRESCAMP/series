@@ -5,8 +5,11 @@ namespace App\Controller;
 use App\Entity\Serie;
 use App\Form\SerieType;
 use App\Repository\SerieRepository;
+use App\Utils\Uploader;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,15 +38,13 @@ class SerieController extends AbstractController
         $nbSerieMax = $serieRepository->count([]);
         $maxPage = ceil($nbSerieMax / SerieRepository::SERIE_LIMIT);
 
-        if ($page >= 1 && $page <= $maxPage) {
+        if($page >= 1 && $page <= $maxPage){
             //utilisation d'une requête personnalisée
             $series = $serieRepository->findBestSeries($page);
-        } else {
+        }else{
             throw $this->createNotFoundException("Oops ! Page not found !");
         }
 
-
-        dump($series);
 
         return $this->render('serie/list.html.twig', [
             //on envoie les données à la vue
@@ -59,7 +60,7 @@ class SerieController extends AbstractController
         //récupération d'une série par son id
         $serie = $serieRepository->find($id);
 
-        if (!$serie) {
+        if(!$serie){
             //lance une erreur 404 si la série n'existe pas
             throw $this->createNotFoundException("Oops ! Serie not found !");
         }
@@ -70,13 +71,17 @@ class SerieController extends AbstractController
     }
 
     #[Route('/add', name: 'add')]
+    #[IsGranted("ROLE_USER")]
     public function add(
         SerieRepository $serieRepository,
-        Request         $request
+        Request $request,
+        Uploader $uploader
     ): Response
     {
-        $serie = new Serie();
+        //renvoie une 403
+        //$this->createAccessDeniedException();
 
+        $serie = new Serie();
 
         //création d'une intance de form lié à une instance de série
         $serieForm = $this->createForm(SerieType::class, $serie);
@@ -84,8 +89,18 @@ class SerieController extends AbstractController
         //méthode qui extrait les éléments du formulaire de la requête
         $serieForm->handleRequest($request);
 
+        if($serieForm->isSubmitted() && $serieForm->isValid()){
 
-        if ($serieForm->isSubmitted() && $serieForm->isValid()) {
+            //upload photo
+            /**
+             * @var UploadedFile $file
+             */
+            $file = $serieForm->get('poster')->getData();
+        //appel à l'uploader
+           $newFileName = $uploader->upload($file,$this->getParameter('upload_serie_poster'),
+            $serie->getName());
+            $serie->setPoster($newFileName);
+
             //sauvegarde en BDD la nouvelle série
             $serieRepository->save($serie, true);
 
@@ -103,21 +118,25 @@ class SerieController extends AbstractController
         ]);
     }
 
-#[Route('/remove/{id}', name: 'remove')]
-public function remove(int $id, SerieRepository $serieRepository)
-{
-    $serie = $serieRepository->find($id);
-    if ($serie) {
-        //je la suprimer
-        $serieRepository->remove($serie, true);
-        $this->addFlash("warning", "serie deleted'");
+    #[Route('/remove/{id}', name: 'remove')]
+    public function remove(int $id, SerieRepository $serieRepository){
+        //récupération de la série
+        $serie = $serieRepository->find($id);
 
-    } else {
-        throw $this->createNotFoundException("this serie can't be deleted");
+        if($serie){
+            //je le supprime
+            $serieRepository->remove($serie, true);
+            $this->addFlash("warning", "Serie deleted !");
+        }else{
+            throw $this->createNotFoundException("This serie can't be deleted !");
+        }
+
+        return $this->redirectToRoute('serie_list');
     }
 
-    return $this->redirectToRoute('serie_list');
-}
+
+
+
 
 
 }
